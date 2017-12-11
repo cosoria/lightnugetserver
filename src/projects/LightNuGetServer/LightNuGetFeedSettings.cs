@@ -11,6 +11,9 @@ namespace LightNuGetServer
         public Dictionary<string, bool> NuGetServerSettings { get; set; } = new Dictionary<string, bool>();
 
         bool ISettingsProvider.GetBoolSetting(string key, bool defaultValue)
-            => NuGetServerSettings.TryGetValue(key, out var tmp) ? tmp : defaultValue;
+        {
+            bool tmp;
+            return NuGetServerSettings.TryGetValue(key, out tmp) ? tmp : defaultValue;
+        }
     }
 }
