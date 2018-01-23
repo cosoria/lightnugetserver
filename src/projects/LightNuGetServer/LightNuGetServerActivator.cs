@@ -25,7 +25,13 @@ namespace LightNuGetServer
             var logger = new SerilogProxyLogger(Log.Logger);
 
             var feeds = settings.Feeds
-                .Select(fs => new LightNuGetFeed(fs, NuGetV2WebApiEnabler.CreatePackageRepository(Path.Combine(settings.PackagesDirPath, fs.Name), fs, logger)))
+                .Select(fs =>
+                {
+                    var rootPath = !string.IsNullOrEmpty(fs.PackagesDirPath)
+                        ? fs.PackagesDirPath
+                        : settings.PackagesDirPath;
+                    return new LightNuGetFeed(fs, NuGetV2WebApiEnabler.CreatePackageRepository(rootPath, fs, logger));
+                })
                 .ToArray();
 
             cfg?.Invoke(feeds);
